@@ -23,16 +23,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
     font-size: 18px;
+    z-index: 999;
   }
 
-  #runBtn {
-    position: absolute;
-    padding: 12px 20px;
-    font-size: 18px;
-    display: none;
-  }
+#runBtn {
+  position: absolute;
+  padding: 12px 20px;
+  font-size: 18px;
+  display: none;
+  cursor: pointer;
+  z-index: 1000; /* <-- เพิ่มตรงนี้ */
+}
 
   #title {
     margin-top: 80px;
@@ -67,7 +69,6 @@
     margin-top: 20px;
     width: 80%;
     max-width: 300px;
-
     opacity: 0;
     transition: opacity 1s ease;
   }
@@ -98,7 +99,7 @@
 <div id="resultBox">
   🏆 พรรคที่ชนะการเลือกตั้ง: พรรคยุคสมัยใหม่ 🎉
   <br>
-  <img id="signature" src="https://various-maroon-ejy67pncsz.edgeone.app/vot.png">
+  <img id="signature" src="https://cdn.discordapp.com/attachments/1343869956659482664/1490739542297415771/2.png?ex=69d526e3&is=69d3d563&hm=7258590f2084b4d6bc120b5aa81ce51f9b93f7dc2d0ca2d8c7dcedaa5cb2c568&">
 </div>
 
 <script>
@@ -111,39 +112,49 @@ const signature = document.getElementById("signature");
 
 let escapeCount = 0;
 
+// เริ่มเพลง
 overlay.addEventListener("click", () => {
   overlay.style.display = "none";
 
-  bgm.src = "https://www.youtube.com/embed/9STODo2IV6I?autoplay=1&loop=1&playlist=9STODo2IV6I";
+  bgm.src = "https://www.youtube.com/embed/VMrQYEHsQII?start=2&autoplay=1&loop=1&playlist=VMrQYEHsQII";
 
   runBtn.style.display = "block";
   centerBtn();
 });
 
+// จัดปุ่มกลางจอ
 function centerBtn() {
   runBtn.style.left = (window.innerWidth / 2 - 60) + "px";
   runBtn.style.top = (window.innerHeight / 2) + "px";
 }
 
-runBtn.addEventListener("mouseover", moveBtn);
-runBtn.addEventListener("touchstart", moveBtn);
-
+// ปุ่มหนี
 function moveBtn() {
-  if (escapeCount < 3) {
-    const x = Math.random() * (window.innerWidth - 120);
-    const y = Math.random() * (window.innerHeight - 60);
-
-    runBtn.style.left = x + "px";
-    runBtn.style.top = y + "px";
-
-    escapeCount++;
-  }
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 60);
+  runBtn.style.left = x + "px";
+  runBtn.style.top = y + "px";
 }
 
-runBtn.addEventListener("click", () => {
-  if (escapeCount >= 3) startAnnouncement();
+// hover สำหรับ PC
+runBtn.addEventListener("mouseover", () => {
+  if (escapeCount < 3) {
+    moveBtn();
+    escapeCount++;
+  }
 });
 
+// click สำหรับมือถือ + กดปุ่ม
+runBtn.addEventListener("click", () => {
+  if (escapeCount < 3) {
+    moveBtn();
+    escapeCount++;
+  } else {
+    startAnnouncement();
+  }
+});
+
+// ประกาศผลทีละตัว
 function startAnnouncement() {
   runBtn.style.display = "none";
 
@@ -159,11 +170,9 @@ function startAnnouncement() {
 
       setTimeout(() => {
         resultBox.classList.add("show");
-
         setTimeout(() => {
           signature.classList.add("show");
         }, 600);
-
       }, 500);
     }
   }, 100);
